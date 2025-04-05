@@ -1,79 +1,122 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* === RESET GLOBAL === */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+html {
+  font-size: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* === VARIÁVEIS DE TEMA === */
+:root {
+  --color-primary: #646cff; /* Azul vibrante para elementos de destaque */
+  --color-secondary: #535bf2; /* Azul mais escuro para contrastes */
+  --color-accent: #22c55e; /* Verde para realces e status positivos */
+
+  --color-text: rgba(255, 255, 255, 0.87); /* Cor principal do texto */
+  --color-bg: #2c2c38; /* Fundo principal da aplicação */
+  --color-surface: #21212d; /* Fundo da barra lateral */
+
+  --color-surface-alt: #23232f; /* Fundo de seções secundárias */
+  --color-surface-dark: #2b2b37; /* Fundo de botões e elementos de destaque */
+  --color-border: #292935; /* Bordas e divisórias */
+  --color-card: #22222e; /* Fundo dos cards */
+  --color-hover: #272733; /* Cor para estados de hover */
+  --color-disabled: #242430; /* Cor para elementos desativados */
+
+  --color-light-text: #213547; /* Cor do texto no tema claro */
+  --color-light-bg: #ffffff; /* Fundo principal no tema claro */
+  --color-light-surface: #f9f9f9; /* Fundo de seções secundárias no tema claro */
+
+  --transition-fast: 0.25s ease;
+
+  /* === BREAKPOINTS === */
+  --breakpoint-desktop: 1280px;
+  --breakpoint-notebook: 1024px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-smartphone: 480px;
+}
+
+/* === TEMA CLARO === */
+html.light {
+  --color-text: var(--color-light-text);
+  --color-bg: var(--color-light-bg);
+  --color-surface: var(--color-light-surface);
+}
+
+/* === ELEMENTOS BÁSICOS === */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-secondary);
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+  font: inherit;
   padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.25s;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  transition: background-color var(--transition-fast);
 }
+
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  background-color: var(--color-secondary);
+  color: #fff;
 }
 
-.card {
-  padding: 2em;
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  line-height: 1.2;
 }
 
-#app {
-  max-width: 1280px;
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.container {
+  max-width: var(--breakpoint-desktop);
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 1rem;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+/* === RESPONSIVIDADE === */
+@media (max-width: 1280px) {
+  .container {
+    max-width: var(--breakpoint-notebook);
   }
-  a:hover {
-    color: #747bff;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    max-width: var(--breakpoint-tablet);
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: var(--breakpoint-smartphone);
+    padding: 0.5rem;
   }
 }
