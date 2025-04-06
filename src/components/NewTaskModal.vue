@@ -23,7 +23,7 @@
         v-model="descricao"
         placeholder="Ex: Uma pausa de 15 minutos ajuda a recarregar as energias"
         class="modal-textarea"
-      />
+      ></textarea>
 
       <!-- Data de vencimento -->
       <label class="modal-label">Data de Vencimento</label>
@@ -44,7 +44,7 @@
             class="modal-input"
           />
           <button @click="removerSubtarefa(index)" class="remover-btn">
-            <PhX :size="20" color="#fff" weight="bold" />
+            <PhX :size="20" weight="bold" />
           </button>
         </div>
       </div>
@@ -56,7 +56,7 @@
       <!-- Status -->
       <label class="modal-label">Status</label>
       <select v-model="status" class="modal-input">
-        <option>Todo</option>
+        <option>A Fazer</option>
         <option>Em Progresso</option>
         <option>Concluído</option>
       </select>
@@ -68,13 +68,13 @@
 </template>
 
 <script setup>
-import {PhX} from '@phosphor-icons/vue'
+import { PhX } from "@phosphor-icons/vue";
 import { ref } from "vue";
 
 const titulo = ref("");
 const descricao = ref("");
 const dataVencimento = ref("");
-const status = ref("Todo");
+const status = ref("A Fazer");
 const subtarefas = ref([{ texto: "" }]);
 
 const adicionarSubtarefa = () => {
@@ -117,10 +117,11 @@ const criarTarefa = () => {
   padding: 24px;
   border-radius: 12px;
   width: 100%;
-  max-width: 500px;
+  max-width: 450px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   max-height: 90vh;
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .modal-header {
@@ -132,7 +133,6 @@ const criarTarefa = () => {
 .modal-title {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 22px;
 }
 
 .modal-label {
@@ -141,6 +141,15 @@ const criarTarefa = () => {
   margin-bottom: 4px;
   margin-top: 12px;
   font-weight: bold;
+}
+
+select.modal-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 24 24' width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 32px;
 }
 
 .modal-input,
@@ -156,28 +165,70 @@ select {
 }
 
 .modal-textarea {
-  resize: vertical;
-  min-height: 60px;
+  resize: none;
+  height: 80px;
+  max-height: 80px;
+}
+
+.modal-input::placeholder,
+.modal-textarea::placeholder {
+  color: var(--color-card-text);
+  opacity: 1;
+}
+
+.modal-input[type="date"] {
+  color-scheme: dark; /* Isso ajusta o fundo e ícones em alguns navegadores */
+  color: var(--color-card-text); /* Cor do texto */
+  padding-right: 10px;
+  position: relative;
+}
+
+.modal-input[type="date"]::-webkit-calendar-picker-indicator {
+  background-image: url("data:image/svg+xml,%3Csvg fill='%23646cff' xmlns='http://www.w3.org/2000/svg' height='24' width='24' viewBox='0 0 24 24'%3E%3Cpath d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right -5px center;
+  background-size: 24px;
+  opacity: 1;
+  cursor: pointer;
+  color: transparent;
 }
 
 .subtarefa-linha {
   display: flex;
   align-items: center;
-  margin-top: 8px;
-  gap: 8px;
+  margin-top: 4px;
+  gap: 4px;
 }
 
 .subtarefas-wrapper {
   max-height: 150px;
   overflow-y: auto;
   margin-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+.subtarefas-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.subtarefas-wrapper::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+.subtarefas-wrapper::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 .remover-btn {
   background: none;
   border: none;
-  font-size: 18px;
   cursor: pointer;
+  color: var(--color-card-text);
+}
+
+.remover-btn:hover{
+  color: var(--color-primary);
 }
 
 .subtarefa-btn {
@@ -215,6 +266,7 @@ select {
 .criar-btn:hover {
   background-color: var(--color-secondary);
 }
+
 .fechar-modal {
   background: none;
   border: none;
@@ -222,9 +274,49 @@ select {
   color: #fff;
   cursor: pointer;
   transition: color 0.2s ease;
+  margin-left: 2rem;
 }
 
 .fechar-modal:hover {
   color: var(--color-secondary);
+}
+
+/* === RESPONSIVIDADE === */
+
+@media (max-width: var(--breakpoint-desktop)) {
+  .modal-container {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: var(--breakpoint-notebook)) {
+  .modal-container {
+    max-width: 480px;
+  }
+}
+
+@media (max-width: var(--breakpoint-tablet)) {
+  .modal-container {
+    max-width: 90%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: var(--breakpoint-smartphone)) {
+  .modal-container {
+    max-width: 95%;
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .modal-title {
+    font-size: 18px;
+  }
+
+  .modal-input,
+  .modal-textarea,
+  select {
+    font-size: 13px;
+  }
 }
 </style>
