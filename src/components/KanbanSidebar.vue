@@ -8,8 +8,8 @@
         <p class="boards-title">TODOS OS QUADROS (8)</p>
         <ul class="board-list">
           <li class="board active">
-            <span class="board-icon">📋</span>
-            Platform Launch
+            <span class="board-icon"><PhLayout :size="22" color="#fff" /></span>
+            Quadro Nexum
           </li>
           <li class="board">Marketing Plan</li>
           <li class="board">Roadmap</li>
@@ -19,22 +19,33 @@
   
       <div class="bottom-section">
         <div class="theme-toggle">
-          <span>🌞</span>
+          <span><PhSun :size="22" color="#9396A5" /></span>
           <label class="switch">
             <input type="checkbox" v-model="darkMode" />
             <span class="slider round"></span>
           </label>
-          <span>🌙</span>
+          <span><PhMoon :size="22" color="#9396A5" /></span>
         </div>
   
-        <button class="hide-sidebar">👁️‍🗨️ Hide Sidebar</button>
+        <button class="hide-sidebar"><PhEyeSlash :size="22" color="#9396A5" />Hide Sidebar</button>
       </div>
     </aside>
   </template>
   
   <script>
+  import { PhMoon } from '@phosphor-icons/vue'
+  import { PhSun } from '@phosphor-icons/vue'
+  import { PhEyeSlash } from '@phosphor-icons/vue'
+  import {PhLayout} from '@phosphor-icons/vue'
+
   export default {
     name: 'KanbanSidebar',
+    components: {
+        PhMoon, 
+        PhSun,
+        PhEyeSlash,
+        PhLayout,
+    },
     data() {
       return {
         darkMode: false,
@@ -115,6 +126,14 @@
     background: var(--color-bg);
     padding: 0.5rem;
     border-radius: 6px;
+
+    span{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
   }
   
   .switch {
@@ -151,7 +170,7 @@
     border-radius: 50%;
   }
   input:checked + .slider {
-    background-color: var(--color-accent);
+    background-color: var(--color-secondary);
   }
   input:checked + .slider:before {
     transform: translateX(16px);
