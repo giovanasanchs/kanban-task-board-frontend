@@ -1,7 +1,12 @@
 <template>
-  <div class="modal-overlay">
+  <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal-container">
-      <h2 class="modal-title">Adicionar Nova Tarefa</h2>
+      <div class="modal-header">
+        <h2 class="modal-title">Adicionar Nova Tarefa</h2>
+        <button class="fechar-modal" @click="$emit('close')">
+          <PhX :size="20" color="#fff" weight="bold" />
+        </button>
+      </div>
 
       <!-- Título -->
       <label class="modal-label">Título</label>
@@ -26,19 +31,24 @@
 
       <!-- Subtarefas -->
       <label class="modal-label">Subtarefas</label>
-      <div
-        v-for="(sub, index) in subtarefas"
-        :key="index"
-        class="subtarefa-linha"
-      >
-        <input
-          v-model="sub.texto"
-          type="text"
-          placeholder="Ex: Fazer café"
-          class="modal-input"
-        />
-        <button @click="removerSubtarefa(index)" class="remover-btn">✕</button>
+      <div class="subtarefas-wrapper">
+        <div
+          v-for="(sub, index) in subtarefas"
+          :key="index"
+          class="subtarefa-linha"
+        >
+          <input
+            v-model="sub.texto"
+            type="text"
+            placeholder="Ex: Fazer café"
+            class="modal-input"
+          />
+          <button @click="removerSubtarefa(index)" class="remover-btn">
+            <PhX :size="20" color="#fff" weight="bold" />
+          </button>
+        </div>
       </div>
+
       <button @click="adicionarSubtarefa" class="subtarefa-btn">
         + Adicionar Nova Subtarefa
       </button>
@@ -51,8 +61,6 @@
         <option>Concluído</option>
       </select>
 
-      <button class="fechar-modal" @click="$emit('close')">✕</button>
-
       <!-- Botão de criar -->
       <button @click="criarTarefa" class="criar-btn">Criar Tarefa</button>
     </div>
@@ -60,6 +68,7 @@
 </template>
 
 <script setup>
+import {PhX} from '@phosphor-icons/vue'
 import { ref } from "vue";
 
 const titulo = ref("");
@@ -87,8 +96,6 @@ const criarTarefa = () => {
       .filter((t) => t.trim() !== ""),
   };
   console.log("Tarefa criada:", novaTarefa);
-
-  // Aqui você pode emitir um evento ou integrar com seu store
 };
 </script>
 
@@ -104,19 +111,28 @@ const criarTarefa = () => {
 }
 
 .modal-container {
+  position: relative;
   background-color: #2d2d3a;
   color: #ffffff;
   padding: 24px;
   border-radius: 12px;
   width: 100%;
-  max-width: 450px;
+  max-width: 500px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .modal-title {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
 }
 
 .modal-label {
@@ -124,6 +140,7 @@ const criarTarefa = () => {
   font-size: 14px;
   margin-bottom: 4px;
   margin-top: 12px;
+  font-weight: bold;
 }
 
 .modal-input,
@@ -150,55 +167,64 @@ select {
   gap: 8px;
 }
 
+.subtarefas-wrapper {
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
 .remover-btn {
   background: none;
   border: none;
-  color: #ff6b6b;
   font-size: 18px;
   cursor: pointer;
 }
 
-.remover-btn:hover {
-  color: #ff4c4c;
-}
-
 .subtarefa-btn {
+  width: 100%;
   margin-top: 10px;
   font-size: 14px;
-  color: #9b7cff;
-  background: none;
+  color: var(--color-primary);
+  background: var(--color-text);
   border: none;
+  font-weight: bold;
   cursor: pointer;
+  border-radius: 20px;
+  padding: 10px 12px;
 }
 
 .subtarefa-btn:hover {
-  text-decoration: underline;
+  color: var(--color-text);
+  background: var(--color-secondary);
 }
 
 .criar-btn {
-  margin-top: 20px;
+  margin-top: 25px;
+  margin-bottom: 10px;
   width: 100%;
-  background-color: #7a5df0;
+  background-color: var(--color-primary);
   color: #fff;
   border: none;
-  padding: 10px;
+  padding: 9px;
   font-weight: bold;
-  border-radius: 8px;
+  border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .criar-btn:hover {
-  background-color: #644ee0;
+  background-color: var(--color-secondary);
 }
 .fechar-modal {
-  position: absolute;
-  top: 12px;
-  right: 16px;
   background: none;
   border: none;
   font-size: 20px;
   color: #fff;
   cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.fechar-modal:hover {
+  color: var(--color-secondary);
 }
 </style>
