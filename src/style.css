@@ -13,11 +13,12 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.6;
   background-color: var(--color-bg);
   color: var(--color-text);
   min-height: 100vh;
+  margin: 0;
 }
 
 /* === VARIÁVEIS DE TEMA === */
@@ -26,14 +27,21 @@ body {
   --color-secondary: #535bf2; /* Azul mais escuro para contrastes */
   --color-accent: #22c55e; /* Verde para realces e status positivos */
 
+  --color-title-column-blue: #4DC3E4;
+  --color-title-column-purple: #8471EF;
+  --color-title-column-green: #6BDFAB;
+
   --color-text: rgba(255, 255, 255, 0.87); /* Cor principal do texto */
-  --color-bg: #2c2c38; /* Fundo principal da aplicação */
-  --color-surface: #21212d; /* Fundo da barra lateral */
+  --color-bg: #21212D; /* Fundo principal da aplicação */
+  --color-surface: #2C2C38; /* Fundo da barra lateral */
 
   --color-surface-alt: #23232f; /* Fundo de seções secundárias */
   --color-surface-dark: #2b2b37; /* Fundo de botões e elementos de destaque */
-  --color-border: #292935; /* Bordas e divisórias */
-  --color-card: #22222e; /* Fundo dos cards */
+  --color-column-board: #23232F;
+  --color-card-title: #FEFEFF;
+  --color-card-text: #9396A5;
+  --color-border: #3F3F4B; /* Bordas e divisórias */
+  --color-card: #2C2C38; /* Fundo dos cards */
   --color-hover: #272733; /* Cor para estados de hover */
   --color-disabled: #242430; /* Cor para elementos desativados */
 
