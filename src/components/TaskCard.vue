@@ -11,19 +11,23 @@
   
   <style scoped>
   .task-card {
-    background-color: #f1f1f1;
-    padding: 12px;
+    background-color: var(--color-card);
+    padding: 20px;
     border-radius: 8px;
-    border-left: 5px solid #3b82f6; /* azul de destaque */
+    border-left: 5px solid var(--color-secondary);
+    border-right: 1.5px solid var(--color-border);
+    border-bottom: 1.5px solid var(--color-border);
+    border-top: 1.5px solid var(--color-border);
   }
   
   .task-title {
     font-weight: bold;
     margin: 0 0 6px;
+    color: var(--color-card-title);
   }
   
   .task-desc {
     font-size: 14px;
-    color: #555;
+    color: var(--color-card-text);
   }
   </style>
