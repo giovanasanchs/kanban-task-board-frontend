@@ -47,6 +47,14 @@ const TaskService = {
     }
   },
 
+  async updateSubtaskStatus(taskId, subtaskId, completed) {
+    const response = await axios.put(
+      `${API_URL}/${taskId}/subtasks/${subtaskId}`,
+      { completed }
+    );
+    return response.data;
+  },
+
   async delete(id) {
     const response = await axios.delete(`${API_URL}/${id}`);
     return response.data;
