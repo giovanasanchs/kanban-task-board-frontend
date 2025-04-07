@@ -56,9 +56,9 @@
       <!-- Status -->
       <label class="modal-label">Status</label>
       <select v-model="status" class="modal-input">
-        <option>A Fazer</option>
-        <option>Em Progresso</option>
-        <option>Concluído</option>
+        <option value="A_FAZER">A Fazer</option>
+        <option value="EM_PROGRESSO">Em Progresso</option>
+        <option value="CONCLUIDO">Concluído</option>
       </select>
 
       <!-- Botão de criar -->
@@ -70,11 +70,14 @@
 <script setup>
 import { PhX } from "@phosphor-icons/vue";
 import { ref } from "vue";
+import TaskService from "../services/TaskService";
+
+const emit = defineEmits(["close"]);
 
 const titulo = ref("");
 const descricao = ref("");
 const dataVencimento = ref("");
-const status = ref("A Fazer");
+const status = ref("A_FAZER");
 const subtarefas = ref([{ texto: "" }]);
 
 const adicionarSubtarefa = () => {
@@ -85,17 +88,25 @@ const removerSubtarefa = (index) => {
   subtarefas.value.splice(index, 1);
 };
 
-const criarTarefa = () => {
+const criarTarefa = async () => {
   const novaTarefa = {
     titulo: titulo.value,
     descricao: descricao.value,
     dataVencimento: dataVencimento.value,
     status: status.value,
     subtarefas: subtarefas.value
-      .map((sub) => sub.texto)
-      .filter((t) => t.trim() !== ""),
+      .filter((sub) => sub.texto.trim() !== "")
+      .map((sub) => sub.texto),
   };
-  console.log("Tarefa criada:", novaTarefa);
+
+  try {
+    const response = await TaskService.create(novaTarefa);
+    console.log("Tarefa criada com sucesso:", response);
+    emit("created");
+    emit("close");
+  } catch (error) {
+    console.error("Erro ao criar tarefa:", error);
+  }
 };
 </script>
 
@@ -227,7 +238,7 @@ select {
   color: var(--color-card-text);
 }
 
-.remover-btn:hover{
+.remover-btn:hover {
   color: var(--color-primary);
 }
 
