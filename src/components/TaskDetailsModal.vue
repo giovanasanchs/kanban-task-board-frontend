@@ -16,9 +16,16 @@
 
       <p class="modal-description">{{ task.description }}</p>
 
+      <p class="modal-due-date">
+        <strong>Data de validade:</strong>
+        {{ new Date(task.dueDate).toLocaleDateString("pt-BR") }}
+      </p>
+
       <div class="modal-subtasks">
         <p class="subtasks-title">
-          Subtasks ({{ completedSubtasks }}/{{ task.subtasks.length }})
+          <strong>Subtarefas</strong> ({{ completedSubtasks }}/{{
+            task.subtasks.length
+          }})
         </p>
         <div
           v-for="(subtask, index) in task.subtasks"
@@ -28,18 +35,19 @@
           <input
             type="checkbox"
             :id="'subtask-' + index"
-            v-model="task.subtasks[index].done"
+            v-model="localTask.subtasks[index].done"
+            @change="updateSubtaskStatus(index)"
           />
           <label :for="'subtask-' + index">{{ subtask.title }}</label>
         </div>
       </div>
 
       <div class="modal-status">
-        <label>Status</label>
-        <select v-model="task.status">
-          <option value="todo">A Fazer</option>
-          <option value="doing">Em Progresso</option>
-          <option value="done">Concluído</option>
+        <strong><label>Status</label></strong>
+        <select v-model="task.status" @change="updateStatus">
+          <option value="A_FAZER">A Fazer</option>
+          <option value="EM_PROGRESSO">Em Progresso</option>
+          <option value="CONCLUIDO">Concluído</option>
         </select>
       </div>
 
@@ -64,44 +72,34 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  reactive,
+  watch,
+} from "vue";
 import ConfirmDeleteModal from "./ConfirmDeleteModal.vue";
 import EditTaskModal from "./EditTaskModal.vue";
 import TaskService from "../services/TaskService";
+import { useToast } from "vue-toastification";
 
 const props = defineProps({
   task: Object,
+  closeModal: Function,
+  handleUpdated: Function,
 });
 const emit = defineEmits(["close", "updated"]);
 
-const completedSubtasks = computed(() => {
-  if (!props.task?.subtasks) return 0;
-  return props.task.subtasks.filter((s) => s.done).length;
-});
-
+const toast = useToast();
 const showEditModal = ref(false);
 const dropdownVisible = ref(false);
-
 const showDeleteConfirm = ref(false);
+const localTask = ref({ ...props.task, subtasks: [...props.task.subtasks] });
 
-function confirmDelete() {
-  showDeleteConfirm.value = false;
-  emit("delete", props.task.id);
-}
-
-// Lida com clique fora do menu
-const handleClickOutside = (e) => {
-  const menu = document.querySelector(".menu-wrapper");
-  if (menu && !menu.contains(e.target)) {
-    dropdownVisible.value = false;
-  }
-};
-
-onMounted(() => {
-  document.addEventListener("click", handleClickOutside);
-});
-onBeforeUnmount(() => {
-  document.removeEventListener("click", handleClickOutside);
+const completedSubtasks = computed(() => {
+  return localTask.value.subtasks.filter((s) => s.done).length;
 });
 
 function toggleDropdown() {
@@ -118,19 +116,88 @@ function handleDelete() {
   showDeleteConfirm.value = true;
 }
 
-function handleDeleted() {
-  emit("deleted");
-  emit("updated");
-  emit("close");
+function confirmDelete() {
+  showDeleteConfirm.value = false;
+  emit("delete", props.task.id);
+}
+
+function handleClickOutside(e) {
+  const menu = document.querySelector(".menu-wrapper");
+  if (menu && !menu.contains(e.target)) {
+    dropdownVisible.value = false;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+  loadTask(); // carrega a task atualizada ao abrir modal
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
+
+watch(
+  () => props.task,
+  (newTask) => {
+    localTask.value = { ...newTask, subtasks: [...newTask.subtasks] };
+  },
+  { immediate: true, deep: true }
+);
+
+async function loadTask() {
+  try {
+    const updatedTask = await TaskService.getById(props.task.id);
+    localTask.value = { ...updatedTask };
+  } catch (err) {
+    console.error("Erro ao carregar a tarefa:", err);
+  }
+}
+
+async function updateStatus() {
+  try {
+    await TaskService.update(props.task.id, {
+      ...props.task,
+      status: props.task.status,
+    });
+    toast.success("Status da tarefa atualizado!", {
+      position: "bottom-right",
+      timeout: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+    });
+    emit("updated");
+  } catch (error) {
+    console.error("Erro ao atualizar status da tarefa:", error);
+  }
+}
+
+async function updateSubtaskStatus(index) {
+  const subtask = localTask.value.subtasks[index];
+  try {
+    await TaskService.updateSubtaskStatus(
+      props.task.id,
+      subtask.id,
+      subtask.done
+    );
+    toast.success("Subtarefa atualizada com sucesso!", {
+      position: "bottom-right",
+    });
+
+    await handleUpdated();
+  } catch (error) {
+    console.error("Erro ao atualizar subtarefa:", error);
+    toast.error("Erro ao atualizar subtarefa.");
+  }
 }
 
 async function handleUpdated() {
-  const updatedTask = await TaskService.getById(props.task.id);
-  props.task.title = updatedTask.title;
-  props.task.description = updatedTask.description;
-  props.task.dueDate = updatedTask.dueDate;
-  props.task.subtasks = updatedTask.subtasks;
-  props.task.status = updatedTask.status;
+  await loadTask();
+  props.task.title = localTask.value.title;
+  props.task.description = localTask.value.description;
+  props.task.dueDate = localTask.value.dueDate;
+  props.task.subtasks = [...localTask.value.subtasks];
+  props.task.status = localTask.value.status;
 
   showEditModal.value = false;
   emit("updated");
@@ -297,5 +364,10 @@ async function handleUpdated() {
 .btn-cancel {
   background-color: #7f8c8d;
   color: white;
+}
+.modal-due-date {
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  color: #cfcfcf;
 }
 </style>
