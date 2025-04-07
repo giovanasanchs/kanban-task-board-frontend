@@ -1,11 +1,12 @@
 import axios from "axios";
 
-// Substitua pela URL do seu backend local ou do deploy
-const API_URL = "http://localhost:8080/api/tasks";
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api",
+});
 
 const TaskService = {
   async getAll() {
-    const response = await axios.get(API_URL);
+    const response = await api.get("/tasks");
     return response.data;
   },
 
@@ -21,7 +22,7 @@ const TaskService = {
       })),
     };
 
-    return axios.post(API_URL, payload);
+    return api.post("/tasks", payload);
   },
 
   async update(id, task) {
@@ -36,7 +37,7 @@ const TaskService = {
           completed: sub.completed,
         })),
       };
-      const response = await axios.put(`${API_URL}/${id}`, payload);
+      const response = await api.put(`/tasks/${id}`, payload);
       return response.data;
     } catch (error) {
       console.error(
@@ -48,20 +49,19 @@ const TaskService = {
   },
 
   async updateSubtaskStatus(taskId, subtaskId, completed) {
-    const response = await axios.put(
-      `${API_URL}/${taskId}/subtasks/${subtaskId}`,
+    const response = await api.put(`/tasks/${taskId}/subtasks/${subtaskId}`,
       { completed }
     );
     return response.data;
   },
 
   async delete(id) {
-    const response = await axios.delete(`${API_URL}/${id}`);
+    const response = await api.delete(`/tasks/${id}`);
     return response.data;
   },
 
   async getById(id) {
-    const response = await axios.get(`${API_URL}/${id}`);
+    const response = await api.get(`/tasks/${id}`);
     return response.data;
   },
 };
