@@ -30,7 +30,7 @@
         @open-details="abrirDetalhes"
         @task-dropped="moverTarefa"
       />
-      <!-- <KanbanColumn /> -->
+      <!-- <KanbanColumn><button>>Nova Coluna</button></KanbanColumn> -->
     </div>
 
     <NewTaskModal
@@ -39,7 +39,6 @@
       @created="buscarTarefas"
     />
 
-    <!-- modal -->
     <TaskDetailsModal
       v-if="exibirModalDetalhes"
       :task="taskSelecionada"
@@ -56,6 +55,8 @@ import NewTaskModal from "./NewTaskModal.vue";
 import TaskDetailsModal from "./TaskDetailsModal.vue";
 import { PhPlusCircle, PhLayout } from "@phosphor-icons/vue";
 import TaskService from "../services/TaskService";
+import { useToast } from "vue-toastification";
+const toast = useToast();
 
 const exibirModal = ref(false);
 const exibirModalDetalhes = ref(false);
@@ -72,15 +73,13 @@ function abrirDetalhes(task) {
 
 function aoExcluirTarefa() {
   exibirModalDetalhes.value = false;
-  buscarTarefas(); // atualiza as tarefas no board
+  buscarTarefas();
 }
 
 async function buscarTarefas() {
   try {
-    const tarefas = await TaskService.getAll(); // já vem como array
+    const tarefas = await TaskService.getAll();
     console.log("Dados recebidos:", tarefas);
-
-    // Corrigindo os filtros pelos valores reais de status
     todoTasks.value = tarefas.filter((t) => t.status === "A_FAZER");
     inProgressTasks.value = tarefas.filter((t) => t.status === "EM_PROGRESSO");
     doneTasks.value = tarefas.filter((t) => t.status === "CONCLUIDO");
@@ -93,7 +92,6 @@ async function moverTarefa({ taskId, newStatus }) {
   try {
     const task = await TaskService.getById(taskId);
 
-    // Garantir que subtasks exista (evita sobrescrever com undefined)
     const updatedTask = {
       ...task,
       status: newStatus,
@@ -106,8 +104,13 @@ async function moverTarefa({ taskId, newStatus }) {
 
     await TaskService.update(taskId, updatedTask);
 
-    // Atualiza as colunas do Kanban
     await buscarTarefas();
+    toast.success("Tarefa movida com sucesso!", {
+      position: "bottom-right",
+      timeout: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+    });
   } catch (error) {
     if (error.response) {
       console.error("Erro do backend:", error.response.data);
