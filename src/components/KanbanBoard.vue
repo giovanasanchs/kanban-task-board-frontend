@@ -14,23 +14,30 @@
         title="A Fazer"
         :tasks="todoTasks"
         @open-details="abrirDetalhes"
+        @task-dropped="moverTarefa"
       />
       <KanbanColumn
         color="var(--color-title-column-purple)"
         title="Em Progresso"
         :tasks="inProgressTasks"
         @open-details="abrirDetalhes"
+        @task-dropped="moverTarefa"
       />
       <KanbanColumn
         color="var(--color-title-column-green)"
         title="Concluído"
         :tasks="doneTasks"
         @open-details="abrirDetalhes"
+        @task-dropped="moverTarefa"
       />
       <!-- <KanbanColumn /> -->
     </div>
 
-    <NewTaskModal v-if="exibirModal" @close="exibirModal = false" />
+    <NewTaskModal
+      v-if="exibirModal"
+      @close="exibirModal = false"
+      @created="buscarTarefas"
+    />
 
     <!-- modal -->
     <TaskDetailsModal
@@ -42,60 +49,71 @@
 </template>
 
 <script setup>
+import { onMounted, ref } from "vue";
 import KanbanColumn from "./KanbanColumn.vue";
 import NewTaskModal from "./NewTaskModal.vue";
-import { PhPlusCircle } from "@phosphor-icons/vue";
-import { PhLayout } from "@phosphor-icons/vue";
 import TaskDetailsModal from "./TaskDetailsModal.vue";
+import { PhPlusCircle, PhLayout } from "@phosphor-icons/vue";
+import TaskService from "../services/TaskService";
 
+const exibirModal = ref(false);
 const exibirModalDetalhes = ref(false);
 const taskSelecionada = ref(null);
 
+const todoTasks = ref([]);
+const inProgressTasks = ref([]);
+const doneTasks = ref([]);
+
 function abrirDetalhes(task) {
-  console.log("Abrindo detalhes da tarefa:", task);
   taskSelecionada.value = task;
   exibirModalDetalhes.value = true;
 }
 
-import { ref } from "vue";
+async function buscarTarefas() {
+  try {
+    const tarefas = await TaskService.getAll(); // já vem como array
+    console.log("Dados recebidos:", tarefas);
 
-const exibirModal = ref(false);
+    // Corrigindo os filtros pelos valores reais de status
+    todoTasks.value = tarefas.filter((t) => t.status === "A_FAZER");
+    inProgressTasks.value = tarefas.filter((t) => t.status === "EM_PROGRESSO");
+    doneTasks.value = tarefas.filter((t) => t.status === "CONCLUIDO");
+  } catch (erro) {
+    console.error("Erro ao buscar tarefas:", erro);
+  }
+}
 
-const todoTasks = ref([
-  {
-    id: 1,
-    title: "Estudar Vue",
-    description: "Revisar componentes e reatividade",
-    subtasks: [
-      { title: "Reatividade", done: false },
-      { title: "Props e Emits", done: true },
-    ],
-    status: "todo",
-  },
-  {
-    id: 2,
-    title: "Montar base do projeto",
-    description: "Estrutura e layout",
-    subtasks: [],
-    status: "todo",
-  },
-]);
+async function moverTarefa({ taskId, newStatus }) {
+  try {
+    const task = await TaskService.getById(taskId);
 
-const inProgressTasks = ref([
-  {
-    id: 3,
-    title: "Implementar drag-and-drop",
-    description: "Usar Vue Draggable",
-  },
-]);
+    // Garantir que subtasks exista (evita sobrescrever com undefined)
+    const updatedTask = {
+      ...task,
+      status: newStatus,
+      subtasks: task.subtasks || [],
+    };
 
-const doneTasks = ref([
-  {
-    id: 4,
-    title: "Implementar drag-and-drop",
-    description: "Usar Vue Draggable",
-  },
-]);
+    console.log("Nova coluna (status):", newStatus);
+    console.log("ID da tarefa:", taskId);
+    console.log("Subtarefas antes do update:", updatedTask.subtasks);
+
+    await TaskService.update(taskId, updatedTask);
+
+    // Atualiza as colunas do Kanban
+    await buscarTarefas();
+  } catch (error) {
+    if (error.response) {
+      console.error("Erro do backend:", error.response.data);
+    } else {
+      console.error("Erro ao mover tarefa:", error.message);
+    }
+  }
+}
+
+onMounted(() => {
+  buscarTarefas();
+});
 </script>
 
 <style scoped>
