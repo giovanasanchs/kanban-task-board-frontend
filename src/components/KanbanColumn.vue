@@ -10,11 +10,18 @@
       item-key="id"
       class="task-list"
       @change="onDrop"
+      :animation="200"
+      ghost-class="drag-ghost"
+      chosen-class="drag-chosen"
     >
       <template #item="{ element }">
         <div @click="abrirDetalhes(element)">
-          <TaskCard :title="element.title" :description="element.description" />
+          <TaskCard :title="element.title" :description="element.description" :subtasks="element.subtasks" />
         </div>
+      </template>
+
+      <template #placeholder>
+        <div class="task-placeholder"></div>
       </template>
     </draggable>
   </div>
@@ -33,14 +40,14 @@ const props = defineProps({
 const emit = defineEmits(["update:tasks", "open-details"]);
 
 function onDrop(event) {
-  emit('update:tasks', [...props.tasks]);
+  emit("update:tasks", [...props.tasks]);
 
   if (event.moved) {
     const movedTask = props.tasks[event.moved.newIndex];
 
-    emit('task-dropped', {
+    emit("task-dropped", {
       taskId: movedTask.id,
-      newStatus: mapTitleToStatus(props.title)
+      newStatus: mapTitleToStatus(props.title),
     });
   }
 
@@ -48,9 +55,9 @@ function onDrop(event) {
   if (event.added) {
     const addedTask = props.tasks[event.added.newIndex];
 
-    emit('task-dropped', {
+    emit("task-dropped", {
       taskId: addedTask.id,
-      newStatus: mapTitleToStatus(props.title)
+      newStatus: mapTitleToStatus(props.title),
     });
   }
 }
@@ -101,5 +108,37 @@ function abrirDetalhes(task) {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+.task-placeholder {
+  height: 80px;
+  border: 2px dashed #bbb;
+  border-radius: 10px;
+  background-color: rgba(200, 200, 200, 0.1);
+  margin-bottom: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Item sendo arrastado */
+.drag-ghost {
+  opacity: 0.5;
+  transform: rotate(2deg);
+  cursor: grabbing;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Item selecionado */
+.drag-chosen {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+  transform: scale(1.02);
+}
+
+/* Cursor padrão nos cards */
+.task-list > div {
+  cursor: grab;
+}
+
+/* Transições suaves */
+.task-list > div {
+  transition: all 0.2s ease-in-out;
 }
 </style>
