@@ -15,28 +15,36 @@ const TaskService = {
       description: task.descricao,
       dueDate: task.dataVencimento,
       status: task.status,
-      subtasks: (task.subtarefas || []).map(titulo => ({
+      subtasks: (task.subtarefas || []).map((titulo) => ({
         title: titulo,
-        completed: false
-      }))
+        completed: false,
+      })),
     };
-  
+
     return axios.post(API_URL, payload);
   },
 
   async update(id, task) {
-    const payload = {
-      title: task.title,
-      description: task.description,
-      dueDate: task.dueDate,
-      status: task.status,
-      subtasks: (task.subtasks || []).map((sub) => ({
-        title: sub.title,
-        completed: sub.completed,
-      })),
-    };
-    const response = await axios.put(`${API_URL}/${id}`, payload);
-    return response.data;
+    try {
+      const payload = {
+        title: task.title,
+        description: task.description,
+        dueDate: task.dueDate + "T23:59:59",
+        status: task.status,
+        subtasks: (task.subtasks || []).map((sub) => ({
+          title: sub.title,
+          completed: sub.completed,
+        })),
+      };
+      const response = await axios.put(`${API_URL}/${id}`, payload);
+      return response.data;
+    } catch (error) {
+      console.error(
+        "Erro ao atualizar tarefa:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
   },
 
   async delete(id) {

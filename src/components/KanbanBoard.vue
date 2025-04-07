@@ -44,6 +44,7 @@
       v-if="exibirModalDetalhes"
       :task="taskSelecionada"
       @close="exibirModalDetalhes = false"
+      @deleted="aoExcluirTarefa"
     />
   </div>
 </template>
@@ -67,6 +68,11 @@ const doneTasks = ref([]);
 function abrirDetalhes(task) {
   taskSelecionada.value = task;
   exibirModalDetalhes.value = true;
+}
+
+function aoExcluirTarefa() {
+  exibirModalDetalhes.value = false;
+  buscarTarefas(); // atualiza as tarefas no board
 }
 
 async function buscarTarefas() {
