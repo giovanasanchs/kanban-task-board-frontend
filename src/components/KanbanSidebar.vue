@@ -5,15 +5,12 @@
       </div>
   
       <nav class="boards">
-        <p class="boards-title">TODOS OS QUADROS (8)</p>
+        <p class="boards-title">TODOS OS QUADROS</p>
         <ul class="board-list">
           <li class="board active">
-            <span class="board-icon"><PhLayout :size="22" color="#fff" /></span>
-            Quadro Nexum
+            <span class="board-icon"><PhLayout :size="22" color="#fff" />Quadro Nexum</span>
           </li>
-          <li class="board">Marketing Plan</li>
-          <li class="board">Roadmap</li>
-          <li class="board new-board">+ Create New Board</li>
+          <li class="board new-board">+ Criar Novo Quadro</li>
         </ul>
       </nav>
   
@@ -84,6 +81,7 @@
   .boards-title {
     font-size: 0.8rem;
     color: #888;
+    margin-left: 0.5rem;
     margin-bottom: 0.5rem;
   }
   
@@ -96,9 +94,9 @@
   .board {
     padding: 0.75rem 1rem;
     border-radius: 6px;
-    margin-bottom: 0.5rem;
     cursor: pointer;
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 0.5rem;
   }
@@ -107,10 +105,18 @@
     background-color: var(--color-primary);
     color: white;
   }
+
+  .board-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
   
   .board.new-board {
     color: var(--color-primary);
     font-weight: 600;
+    margin-top: 1rem;
   }
   
   .bottom-section {
