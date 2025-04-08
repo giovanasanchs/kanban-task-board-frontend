@@ -44,6 +44,7 @@
       :task="taskSelecionada"
       @close="exibirModalDetalhes = false"
       @deleted="aoExcluirTarefa"
+      @updated="buscarTarefas"
     />
   </div>
 </template>
@@ -176,12 +177,44 @@ onMounted(() => {
 }
 
 .kanban-board {
-  width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 20px;
-  padding: 20px;
-  flex: 1;
+  gap: 1rem;
+  max-width: 100%;
+  padding: 1rem;
   background-color: var(--color-bg);
+}
+
+/* Telas grandes: limitar largura e centralizar */
+@media (min-width: var(--breakpoint-desktop)) {
+  .kanban-board {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Telas entre notebook e desktop */
+@media (max-width: var(--breakpoint-desktop)) and (min-width: var(--breakpoint-notebook)) {
+  .kanban-board {
+    max-width: var(--breakpoint-desktop);
+    margin: 0 auto;
+  }
+}
+
+/* Telas notebook */
+@media (max-width: var(--breakpoint-notebook)) {
+  .kanban-board {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+
+/* Telas tablet */
+@media (max-width: var(--breakpoint-tablet)) {
+  .kanban-board {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 </style>
