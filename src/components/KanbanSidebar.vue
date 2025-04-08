@@ -10,11 +10,11 @@
           <li class="board active">
             <span class="board-icon"><PhLayout :size="22" color="#fff" />Quadro Nexum</span>
           </li>
-          <li class="board new-board">+ Criar Novo Quadro</li>
+          <!-- <li class="board new-board">+ Criar Novo Quadro</li> -->
         </ul>
       </nav>
   
-      <div class="bottom-section">
+      <!-- <div class="bottom-section">
         <div class="theme-toggle">
           <span><PhSun :size="22" color="#9396A5" /></span>
           <label class="switch">
@@ -22,10 +22,10 @@
             <span class="slider round"></span>
           </label>
           <span><PhMoon :size="22" color="#9396A5" /></span>
-        </div>
+        </div> -->
   
-        <button class="hide-sidebar"><PhEyeSlash :size="22" color="#9396A5" />Hide Sidebar</button>
-      </div>
+        <!-- <button class="hide-sidebar"><PhEyeSlash :size="22" color="#9396A5" />Hide Sidebar</button> -->
+      <!-- </div> -->
     </aside>
   </template>
   
@@ -53,7 +53,7 @@
   
   <style scoped>
   .sidebar {
-    width: 260px;
+    width: 270px;
     background-color: var(--color-surface-dark);
     color: var(--color-text);
     display: flex;
@@ -70,12 +70,19 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 2rem;
+    margin-top: 2.2rem;
+    margin-left: 0.5rem;
   }
   
   .logo-icon {
     color: var(--color-primary);
     font-size: 1.5rem;
+  }
+
+  .boards{
+    margin-top: 8rem;
+    width: 100%;
+    height: 100%;
   }
   
   .boards-title {
