@@ -1,29 +1,35 @@
 <template>
-  <div class="kanban-column">
-    <h2 class="column-title">
-      <span class="color-dot" :style="{ backgroundColor: color }"></span>
-      {{ title }}
-    </h2>
-    <draggable
-      :list="tasks"
-      group="tasks"
-      item-key="id"
-      class="task-list"
-      @change="onDrop"
-      :animation="200"
-      ghost-class="drag-ghost"
-      chosen-class="drag-chosen"
-    >
-      <template #item="{ element }">
-        <div @click="abrirDetalhes(element)">
-          <TaskCard :title="element.title" :description="element.description" :subtasks="element.subtasks" />
-        </div>
-      </template>
+  <div class="container-kanban-column">
+    <div class="kanban-column">
+      <h2 class="column-title">
+        <span class="color-dot" :style="{ backgroundColor: color }"></span>
+        {{ title }}
+      </h2>
+      <draggable
+        :list="tasks"
+        group="tasks"
+        item-key="id"
+        class="task-list"
+        @change="onDrop"
+        :animation="200"
+        ghost-class="drag-ghost"
+        chosen-class="drag-chosen"
+      >
+        <template #item="{ element }">
+          <div @click="abrirDetalhes(element)">
+            <TaskCard :task="element"
+              :title="element.title"
+              :description="element.description"
+              :subtasks="element.subtasks"
+            />
+          </div>
+        </template>
 
-      <template #placeholder>
-        <div class="task-placeholder"></div>
-      </template>
-    </draggable>
+        <template #placeholder>
+          <div class="task-placeholder"></div>
+        </template>
+      </draggable>
+    </div>
   </div>
 </template>
 
@@ -75,20 +81,37 @@ function mapTitleToStatus(title) {
   }
 }
 
-function abrirDetalhes(task) {
-  emit("open-details", task);
+function abrirDetalhes(element) {
+  emit("open-details", element);
+  console.log('Tarefa clicada:', element);
 }
 </script>
 
 <style scoped>
+.container-kanban-column {
+  width: 100%;
+  max-width: 390px;
+  min-height: 82.7vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+}
+
+@media (min-width: var(--breakpoint-desktop)) {
+  .container-kanban-column {
+    min-height: 87.6vh;
+  }
+}
+
 .kanban-column {
   background-color: var(--color-column-board);
   border-radius: 10px;
   padding: 16px;
-  width: 390px;
+  width: 100%;
+  flex: 1;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
 .column-title {
   margin-bottom: 16px;
   font-size: 18px;
