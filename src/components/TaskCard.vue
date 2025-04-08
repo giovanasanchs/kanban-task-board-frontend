@@ -1,24 +1,23 @@
 <template>
   <div class="task-card">
-    <h3 class="task-title">{{ title }}</h3>
-    <p class="task-desc">{{ description }}</p>
+    <h3 class="task-title">{{ task.title }}</h3>
+    <p class="task-desc">{{ task.description }}</p>
 
-    <div v-if="subtasks.length">
-      {{ subtasks.filter((s) => s.done).length }} de
-      {{ subtasks.length }} subtarefas concluídas
+    <div v-if="task.subtasks.length">
+      {{ task.subtasks.filter((s) => s.completed).length }} de
+      {{ task.subtasks.length }} subtarefas concluídas
     </div>
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
-  title: String,
-  description: String,
-  subtasks: {
-    type: Array,
-    default: () => [],
-  },
+  task: {
+    type: Object,
+    required: true,
+  }
 });
+console.log(props.task.subtasks)
 </script>
 
 <style scoped>
