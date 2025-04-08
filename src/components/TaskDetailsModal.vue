@@ -18,29 +18,44 @@
 
       <p class="modal-due-date">
         <strong>Data de validade:</strong>
-        {{ new Date(task.dueDate).toLocaleDateString("pt-BR") }}
+        {{ new Date(task.dueDate + 'T00:00:00').toLocaleDateString("pt-BR") }}
       </p>
 
-      <div class="modal-subtasks">
-        <p class="subtasks-title">
-          <strong>Subtarefas</strong> ({{ completedSubtasks }}/{{
-            task.subtasks.length
-          }})
-        </p>
-        <div
+      <!-- <div
+        v-for="(subtask, index) in localTask.subtasks"
+        :key="index"
+        class="subtask-item"
+      >
+        <input
+          type="checkbox"
+          :id="'subtask-' + index"
+          v-model="subtask.done"
+          @change="updateSubtaskStatus(index)"
+        />
+        <label
+          :for="'subtask-' + index"
+          :class="{ 'subtask-done': subtask.done }"
+        >
+          {{ subtask.title }}
+        </label>
+      </div> -->
+
+      <ul class="subtask-list">
+        <li
           v-for="(subtask, index) in task.subtasks"
           :key="index"
           class="subtask-item"
         >
-          <input
-            type="checkbox"
-            :id="'subtask-' + index"
-            v-model="localTask.subtasks[index].done"
-            @change="updateSubtaskStatus(index)"
-          />
-          <label :for="'subtask-' + index">{{ subtask.title }}</label>
-        </div>
-      </div>
+          <label>
+            <input
+              type="checkbox"
+              :checked="subtask.completed"
+              @change="toggleSubtask(index)"
+            />
+            {{ subtask.title }}
+          </label>
+        </li>
+      </ul>
 
       <div class="modal-status">
         <strong><label>Status</label></strong>
@@ -90,13 +105,17 @@ const props = defineProps({
   closeModal: Function,
   handleUpdated: Function,
 });
-const emit = defineEmits(["close", "updated"]);
+const emit = defineEmits(["close", "deleted", "updated"]);
 
 const toast = useToast();
 const showEditModal = ref(false);
 const dropdownVisible = ref(false);
 const showDeleteConfirm = ref(false);
-const localTask = ref({ ...props.task, subtasks: [...props.task.subtasks] });
+// const localTask = ref({ ...props.task, subtasks: [...props.task.subtasks] });
+const localTask = reactive({
+  ...props.task,
+  subtasks: [...props.task.subtasks],
+});
 
 const completedSubtasks = computed(() => {
   return localTask.value.subtasks.filter((s) => s.done).length;
@@ -104,6 +123,26 @@ const completedSubtasks = computed(() => {
 
 function toggleDropdown() {
   dropdownVisible.value = !dropdownVisible.value;
+}
+
+async function toggleSubtask(index) {
+  props.task.subtasks[index].completed = !props.task.subtasks[index].completed;
+
+  try {
+    await TaskService.update(props.task.id, {
+      ...props.task,
+      subtasks: props.task.subtasks,
+    });
+    toast.success(
+      `Subtarefa "${props.task.subtasks[index].title}" atualizada!`,
+      {
+        position: "bottom-right",
+      }
+    );
+    emit("updated"); // <-- para o KanbanBoard atualizar
+  } catch (error) {
+    console.error("Erro ao atualizar subtarefa:", error);
+  }
 }
 
 function handleEdit() {
@@ -136,6 +175,14 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
+
+watch(
+  () => localTask.subtasks,
+  (newVal) => {
+    console.log("subtasks atualizadas:", newVal);
+  },
+  { deep: true }
+);
 
 watch(
   () => props.task,
@@ -369,5 +416,38 @@ async function handleUpdated() {
   font-size: 0.85rem;
   margin-bottom: 1rem;
   color: #cfcfcf;
+}
+.subtask-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  background-color: #20212c;
+  padding: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.subtask-item:hover {
+  background-color: #2b2c37;
+}
+
+.subtask-item input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #635fc7; /* Cor roxa bonita, pode ajustar */
+}
+
+.subtask-item label {
+  color: #d1d1d1;
+  font-size: 0.95rem;
+  flex: 1;
+  transition: color 0.3s;
+}
+
+.subtask-item label.subtask-done {
+  text-decoration: line-through;
+  color: #888;
 }
 </style>
