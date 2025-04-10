@@ -70,7 +70,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: 2.2rem;
+    margin-top: 1rem;
     margin-left: 0.5rem;
   }
   
