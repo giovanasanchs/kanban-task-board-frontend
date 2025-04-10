@@ -41,7 +41,7 @@
             v-model="sub.texto"
             type="text"
             placeholder="Ex: Fazer café"
-            class="modal-input"
+            class="modal-input input-subtask"
           />
           <button @click="removerSubtarefa(index)" class="remover-btn">
             <PhX :size="20" weight="bold" />
@@ -163,6 +163,10 @@ select.modal-input {
   padding-right: 32px;
 }
 
+.input-subtask{
+  margin-left: 0.3rem;
+}
+
 .modal-input,
 .modal-textarea,
 select {
@@ -179,6 +183,8 @@ select {
   resize: none;
   height: 80px;
   max-height: 80px;
+  font-family: 'Plus Jakarta Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
 }
 
 .modal-input::placeholder,
@@ -188,8 +194,8 @@ select {
 }
 
 .modal-input[type="date"] {
-  color-scheme: dark; /* Isso ajusta o fundo e ícones em alguns navegadores */
-  color: var(--color-card-text); /* Cor do texto */
+  color-scheme: dark;
+  color: var(--color-card-text);
   padding-right: 10px;
   position: relative;
 }
