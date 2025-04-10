@@ -4,6 +4,17 @@
       <h1 class="board-title">
         <PhLayout :size="28" color="#FEFFFF" />Quadro Nexum
       </h1>
+      <div class="search-wrapper">
+        <input
+          v-model="filtroTitulo"
+          type="text"
+          class="search-input"
+          placeholder="Buscar tarefa..."
+        />
+        <button class="search-button" @click="buscarTarefas">
+          <PhMagnifyingGlass class="search-icon" :size="20" weight="bold" />
+        </button>
+      </div>
       <button class="add-task-btn" @click="exibirModal = true">
         <PhPlusCircle :size="22" color="#fff" />Nova Tarefa
       </button>
@@ -50,14 +61,17 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch  } from "vue";
 import KanbanColumn from "./KanbanColumn.vue";
 import NewTaskModal from "./NewTaskModal.vue";
 import TaskDetailsModal from "./TaskDetailsModal.vue";
-import { PhPlusCircle, PhLayout } from "@phosphor-icons/vue";
+import { PhPlusCircle, PhLayout, PhMagnifyingGlass } from "@phosphor-icons/vue";
 import TaskService from "../services/TaskService";
 import { useToast } from "vue-toastification";
 const toast = useToast();
+
+const filtroTitulo = ref("");
+const tarefasOriginais = ref([]);
 
 const exibirModal = ref(false);
 const exibirModalDetalhes = ref(false);
@@ -77,17 +91,18 @@ function aoExcluirTarefa() {
   buscarTarefas();
 }
 
-async function buscarTarefas() {
-  try {
-    const tarefas = await TaskService.getAll();
-    console.log("Dados recebidos:", tarefas);
-    todoTasks.value = tarefas.filter((t) => t.status === "A_FAZER");
-    inProgressTasks.value = tarefas.filter((t) => t.status === "EM_PROGRESSO");
-    doneTasks.value = tarefas.filter((t) => t.status === "CONCLUIDO");
-  } catch (erro) {
-    console.error("Erro ao buscar tarefas:", erro);
-  }
-}
+// async function buscarTarefas() {
+//   try {
+//     const tarefas = await TaskService.getAll();
+//     console.log("Dados recebidos:", tarefas);
+//     todoTasks.value = tarefas.filter((t) => t.status === "A_FAZER");
+//     inProgressTasks.value = tarefas.filter((t) => t.status === "EM_PROGRESSO");
+//     doneTasks.value = tarefas.filter((t) => t.status === "CONCLUIDO");
+//     filtrarPorTitulo();
+//   } catch (erro) {
+//     console.error("Erro ao buscar tarefas:", erro);
+//   }
+// }
 
 async function moverTarefa({ taskId, newStatus }) {
   try {
@@ -120,6 +135,35 @@ async function moverTarefa({ taskId, newStatus }) {
     }
   }
 }
+
+async function buscarTarefas() {
+  try {
+    const tarefas = await TaskService.getAll();
+    tarefasOriginais.value = tarefas; // <-- salva as tarefas completas antes
+
+    filtrarPorTitulo(); // <-- aí sim pode aplicar o filtro
+  } catch (erro) {
+    console.error("Erro ao buscar tarefas:", erro);
+  }
+}
+
+function filtrarPorTitulo() {
+  const filtro = filtroTitulo.value.toLowerCase();
+
+  const tarefasFiltradas = tarefasOriginais.value.filter((t) =>
+    t.title.toLowerCase().includes(filtro)
+  );
+
+  todoTasks.value = tarefasFiltradas.filter((t) => t.status === "A_FAZER");
+  inProgressTasks.value = tarefasFiltradas.filter(
+    (t) => t.status === "EM_PROGRESSO"
+  );
+  doneTasks.value = tarefasFiltradas.filter((t) => t.status === "CONCLUIDO");
+}
+
+watch(filtroTitulo, () => {
+  filtrarPorTitulo();
+});
 
 onMounted(() => {
   buscarTarefas();
@@ -174,6 +218,55 @@ onMounted(() => {
 
 .add-task-btn:hover {
   background-color: var(--color-secondary);
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg);
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  margin-right: 16rem;
+}
+
+.search-input {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 20px 0 0 20px;
+  background-color: transparent;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 370px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.search-button {
+  background-color: white;
+  color: var(--color-primary);
+  border: none;
+  border-radius: 20px;
+  margin-right: 0.2rem;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button:hover {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.search-icon {
+  transition: color 0.3s ease;
 }
 
 .kanban-board {
