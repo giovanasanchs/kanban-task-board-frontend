@@ -2,19 +2,7 @@
 
 Este projeto é uma solução desenvolvida para o desafio técnico proposto pela **Nexum**. O objetivo é criar um **Kanban Board** totalmente funcional, responsivo e intuitivo, utilizando **Vue 3** (ou React, dependendo da escolha) com funcionalidades completas de **CRUD de tarefas** e **drag-and-drop entre colunas**.
 
-Este projeto foi construído com base no desafio proposto pela Nexum, respeitando os seguintes critérios:
-
-✅ Drag-and-drop funcional
-
-✅ CRUD completo
-
-✅ Interface responsiva
-
-✅ Componentização e organização
-
-✅ Experiência do usuário aprimorada com animações e feedbacks visuais
-
-> 💻 **Desenvolvido com foco em boas práticas, responsividade e experiência do usuário.**
+> 💻 **Desenvolvido um CRUD completo, com base em boas práticas, componentização e organização, responsividade e experiência do usuário aprimorada com animações e feedbacks visuais.**
 
 ---
 
@@ -37,7 +25,6 @@ Este projeto foi construído com base no desafio proposto pela Nexum, respeitand
 
 ✨ Animações suaves ao mover tarefas  
 🔎 Campo de busca para filtrar tarefas por título  
-📅 Componente de **Datepicker** para seleção de data de vencimento  
 
 ---
 
@@ -57,13 +44,14 @@ O sistema é dividido em **três colunas principais**, representando o progresso
 
 - [Vue 3](https://vuejs.org/) + [Vite](https://vitejs.dev/) Framework e servidor para desenvolvimento
 - [VueDraggable](https://github.com/SortableJS/vue.draggable.next) para drag-and-drop
-- [phosphoricons](https://phosphoricons.com/) para ícones
-- [axios](https://axios-http.com/ptbr/) para manipulação de requisição HTTPS
+- [Phosphoricons](https://phosphoricons.com/) para ícones
+- [Axios](https://axios-http.com/ptbr/) para manipulação de requisição HTTPS
 
 ---
 
 ## 📂 Organização dos Arquivos
 
+```bash
 📁 src
 ├── 📁 components       → Componentes reutilizáveis (cards, modals, colunas)
 ├── 📁 views            → Tela principal com board Kanban
@@ -71,6 +59,7 @@ O sistema é dividido em **três colunas principais**, representando o progresso
 ├── 📁 assets           → Ícones, imagens e estilos globais
 ├── App.vue            → Componente raiz
 ├── main.js            → Ponto de entrada da aplicação
+```
 
 ---
 
