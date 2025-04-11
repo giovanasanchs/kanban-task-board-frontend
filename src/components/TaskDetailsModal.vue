@@ -18,7 +18,7 @@
 
       <p class="modal-due-date">
         <strong>Data de validade:</strong>
-        {{ new Date(task.dueDate + 'T00:00:00').toLocaleDateString("pt-BR") }}
+        {{ new Date(task.dueDate + "T00:00:00").toLocaleDateString("pt-BR") }}
       </p>
 
       <!-- <div
@@ -40,13 +40,20 @@
         </label>
       </div> -->
 
+      <div class="subtasks-header">
+        <strong
+          >Subtarefas ({{ task.subtasks.filter((s) => s.completed).length }} de
+          {{ task.subtasks.length }})</strong
+        >
+      </div>
+
       <ul class="subtask-list">
         <li
           v-for="(subtask, index) in task.subtasks"
           :key="index"
           class="subtask-item"
         >
-          <label>
+          <label :class="{ 'subtask-done': subtask.completed }">
             <input
               type="checkbox"
               :checked="subtask.completed"
@@ -288,6 +295,7 @@ async function handleUpdated() {
 }
 
 .modal-description {
+  max-width: 24rem;
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
   color: #d1d1d1;
@@ -336,7 +344,7 @@ async function handleUpdated() {
 .edit-button {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #d1d1d1;
   cursor: pointer;
 }
@@ -366,6 +374,7 @@ async function handleUpdated() {
   padding: 0.5rem 1rem;
   background: none;
   border: none;
+  border-radius: none;
   color: #d1d1d1;
   text-align: left;
   cursor: pointer;
@@ -374,6 +383,8 @@ async function handleUpdated() {
 .dropdown-menu button:hover {
   background-color: #3a3b4a;
   color: white;
+  border: none;
+  border-radius: none;
 }
 .confirm-delete {
   background-color: #20212c;
@@ -417,10 +428,36 @@ async function handleUpdated() {
   margin-bottom: 1rem;
   color: #cfcfcf;
 }
+.subtasks-header {
+  font-size: 0.85rem;
+  color: #cfcfcf;
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.subtask-list {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
+
+.subtask-list::-webkit-scrollbar {
+  width: 6px;
+}
+.subtask-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.subtask-list::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
 .subtask-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.8rem;
   margin-bottom: 0.5rem;
   background-color: #20212c;
   padding: 0.75rem;
@@ -429,17 +466,17 @@ async function handleUpdated() {
   transition: background 0.3s;
 }
 
-.subtask-item:hover {
-  background-color: #2b2c37;
-}
-
 .subtask-item input[type="checkbox"] {
   width: 1rem;
   height: 1rem;
-  accent-color: #635fc7; /* Cor roxa bonita, pode ajustar */
+  accent-color: var(--color-primary);
+  cursor: pointer;
 }
 
 .subtask-item label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   color: #d1d1d1;
   font-size: 0.95rem;
   flex: 1;
