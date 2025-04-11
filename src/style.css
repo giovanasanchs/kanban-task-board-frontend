@@ -52,9 +52,9 @@ body {
   --transition-fast: 0.25s ease;
 
   /* === BREAKPOINTS === */
-  --breakpoint-desktop: 1280px;
-  --breakpoint-notebook: 1024px;
-  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1440px;
+  --breakpoint-notebook: 1280px;
+  --breakpoint-tablet: 834px;
   --breakpoint-smartphone: 480px;
 }
 
@@ -116,13 +116,13 @@ img {
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 834px) {
   .container {
     max-width: var(--breakpoint-tablet);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .container {
     max-width: var(--breakpoint-smartphone);
     padding: 0.5rem;
