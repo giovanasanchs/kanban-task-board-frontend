@@ -40,7 +40,7 @@
           <input
             type="text"
             v-model="subtask.title"
-            class="modal-input"
+            class="modal-input input-subtask"
             placeholder="Título da subtarefa"
           />
           <button class="remover-btn" @click="removeSubtask(index)">✕</button>
@@ -84,7 +84,7 @@ export default {
     task: {
       immediate: true,
       handler(newTask) {
-        console.log("🧩 Prop 'task' recebida:", newTask); // <-- debug
+        console.log("Prop 'task' recebida:", newTask); 
         if (newTask) {
           this.editedTask = {
             ...newTask,
@@ -92,7 +92,7 @@ export default {
               ? newTask.subtasks.map((s) => ({ ...s }))
               : [],
           };
-          console.log("📦 editedTask montada:", this.editedTask); // <-- debug
+          console.log("editedTask montada:", this.editedTask); 
         }
       },
     },
@@ -100,20 +100,20 @@ export default {
   methods: {
     addSubtask() {
       this.editedTask.subtasks.push({ title: "" });
-      console.log("➕ Subtarefa adicionada:", this.editedTask.subtasks); // <-- debug
+      console.log("Subtarefa adicionada:", this.editedTask.subtasks); 
     },
     removeSubtask(index) {
       this.editedTask.subtasks.splice(index, 1);
       console.log(
-        "➖ Subtarefa removida. Lista atual:",
+        "Subtarefa removida. Lista atual:",
         this.editedTask.subtasks
-      ); // <-- debug
+      );
     },
     async updateTask() {
       try {
-        console.log("🚀 Enviando para atualização:", this.editedTask); // <-- debug
+        console.log("Enviando para atualização:", this.editedTask); 
         await TaskService.update(this.editedTask.id, this.editedTask);
-        console.log("✅ Tarefa atualizada com sucesso."); // <-- debug
+        console.log("Tarefa atualizada com sucesso."); 
         this.$emit("updated");
         this.$emit("close");
 
@@ -124,8 +124,10 @@ export default {
           closeOnClick: false,
         });
       } catch (error) {
-        console.error("❌ Erro ao atualizar tarefa:", error);
-        alert("Erro ao atualizar tarefa. Tente novamente.");
+        console.error("Erro ao atualizar tarefa:", error);
+        toast.error("Erro ao atualizar tarefa. Tente novamente!", {
+          position: "bottom-right",
+        });
       }
     },
   },
@@ -185,6 +187,10 @@ select.modal-input {
   padding-right: 32px;
 }
 
+.input-subtask{
+  margin-left: 0.3rem;
+}
+
 .modal-input,
 .modal-textarea,
 select {
@@ -210,8 +216,8 @@ select {
 }
 
 .modal-input[type="date"] {
-  color-scheme: dark; /* Isso ajusta o fundo e ícones em alguns navegadores */
-  color: var(--color-card-text); /* Cor do texto */
+  color-scheme: dark; 
+  color: var(--color-card-text); 
   padding-right: 10px;
   position: relative;
 }
