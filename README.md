@@ -1,8 +1,17 @@
-# 📌 Desafio Técnico - Kanban Board com Formulário Integrado
+# 📌 Kanban Board com Formulário Integrado
 
-Este projeto é uma solução desenvolvida para o desafio técnico proposto pela **Nexum**. O objetivo é criar um **Kanban Board** totalmente funcional, responsivo e intuitivo, utilizando **Vue 3** (ou React, dependendo da escolha) com funcionalidades completas de **CRUD de tarefas** e **drag-and-drop entre colunas**.
+Este projeto é uma solução desenvolvida para o desafio técnico proposto pela **Nexum**. O objetivo é criar um **Kanban Board** totalmente funcional, responsivo e intuitivo, utilizando **Vue 3** com funcionalidades completas de **CRUD de tarefas** e **drag-and-drop entre colunas**.
 
 > 💻 **Desenvolvido um CRUD completo, com base em boas práticas, componentização e organização, responsividade e experiência do usuário aprimorada com animações e feedbacks visuais.**
+
+---
+
+## 🔗 Repositório do Backend
+
+Este projeto possui uma API backend desenvolvida em Java 17.  
+Acesse o repositório clicando no link abaixo:
+
+👉 [kanban-task-board-backend](https://github.com/giovanasanchs/kanban-task-board-backend)
 
 ---
 
