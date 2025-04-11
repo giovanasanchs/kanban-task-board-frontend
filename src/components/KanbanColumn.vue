@@ -131,6 +131,23 @@ function abrirDetalhes(element) {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  overflow-y: auto;
+  max-height: 72vh; 
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+.task-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 6px;
+}
+
+.task-list::-webkit-scrollbar-track {
+  background: transparent;
 }
 .task-placeholder {
   height: 80px;
